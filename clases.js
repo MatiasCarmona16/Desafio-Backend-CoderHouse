@@ -1,11 +1,21 @@
+const fs = require('fs');
+
 class ProductManager {
     constructor() {
         this.products = [];
         this.id = 0;
+        this.path = "./productos.json"
     }
 
     getProducts() {
-        return this.products;
+        try {
+            const data = fs.readFileSync(this.path, 'utf-8')
+            this.products = JSON.parse(data);
+
+            return this.products
+        } catch (err){
+            console.log ('Error en la carga')
+        }
     }
 
     addProduct ( title, description, price, thumbnail, code, stock ) {
@@ -24,13 +34,13 @@ class ProductManager {
         }
     }
 
-    getProductsByCode (code) {
-        let product = this.products.find((p) => p.code === code);
+    getProductsById (id) {
+        let product = this.products.find((p) => p.id === id);
 
         if (product) {
             return product
         } else {
-            console.log(`No se encuentra el producto ${code}`);
+            console.log(`No se encuentra el producto ${id}`);
         }
     }
 }
@@ -44,11 +54,8 @@ product.addProduct("Smartphone", "Apple Iphone 13", 600, "https://encrypted-tbn2
 
 console.log(product.getProducts());
 
-console.log(product.getProductsByCode(456));
+console.log(product.getProductsById(456));
 
 
-
-
-//logica id 0:27
 
 
