@@ -1,0 +1,18 @@
+[
+  {
+    "id": 2,
+    "title": "Smartphone",
+    "description": "Apple Iphone 13",
+    "price": 600,
+    "thumbnail": "https://...",
+    "code": 567
+  },
+  {
+    "id": 3,
+    "title": "Smartphone",
+    "description": "Apple Iphone 12",
+    "price": 540,
+    "thumbnail": "https://...",
+    "code": 456
+  }
+]

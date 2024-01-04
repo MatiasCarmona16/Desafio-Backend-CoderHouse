@@ -2,59 +2,106 @@ const fs = require('fs');
 
 class ProductManager {
     constructor() {
-        this.products = [];
-        this.id = 0;
-        this.path = "./productos.json"
+        this.path = "./productos.json";
+        this.loadProducts();
     }
 
-    getProducts() {
+    loadProducts() {
         try {
-            const data = fs.readFileSync(this.path, 'utf-8')
+            const data = fs.readFileSync(this.path, 'utf-8');
             this.products = JSON.parse(data);
-
-            return this.products
-        } catch (err){
-            console.log ('Error en la carga')
+            this.id = this.calculateNextId();
+        } catch (err) {
+            this.products = [];
+            this.id = 1;
         }
     }
 
-    addProduct ( title, description, price, thumbnail, code, stock ) {
-        if ( !title || !description || !price || !thumbnail || !code || !stock ) {
-            console.log ("Todos los campos son requeridos");
+    calculateNextId() {
+        if (this.products.length === 0) {
+            return 1;
+        }
+        const maxId = this.products.reduce((max, product) => Math.max(max, product.id), 0);
+        return maxId + 1;
+    }
+
+    saveProducts() {
+        fs.writeFileSync(this.path, JSON.stringify(this.products, null, 2), 'utf-8');
+    }
+
+    addProduct(title, description, price, thumbnail, code) {
+        if (!title || !description || !price || !thumbnail || !code) {
+            console.log("Todos los campos son requeridos");
+            return;
         }
 
         if (!this.products.some((p) => p.code === code)) {
-            product.id = this.id++
-            let newProduct = { title, description, price, thumbnail, code, stock }
-
+            const newProduct = { id: this.id++, title, description, price, thumbnail, code };
             this.products.push(newProduct);
-            console.log(`El producto ${title} se agrego con exito`);
+            this.saveProducts();
+            console.log(`El producto ${title} se agregó con éxito`);
         } else {
-            console.log(`Se encuentra ya existente el producto ${code}`);
+            console.log(`Ya existe el producto con el código ${code}`);
         }
     }
 
-    getProductsById (id) {
-        let product = this.products.find((p) => p.id === id);
+    getProducts() {
+        return this.products;
+    }
+
+    getProductById(id) {
+        const product = this.products.find((p) => p.id === id);
 
         if (product) {
-            return product
+            return product;
         } else {
-            console.log(`No se encuentra el producto ${id}`);
+            console.log(`No se encuentra el producto con el id ${id}`);
+        }
+    }
+
+    updateProduct(id, updatedFields) {
+        const productIndex = this.products.findIndex((p) => p.id === id);
+
+        if (productIndex !== -1) {
+            this.products[productIndex] = { ...this.products[productIndex], ...updatedFields };
+            this.saveProducts();
+            console.log(`El producto con id ${id} se actualizó con éxito`);
+        } else {
+            console.log(`No se encuentra el producto con el id ${id}`);
+        }
+    }
+
+    deleteProduct(id) {
+        const productIndex = this.products.findIndex((p) => p.id === id);
+
+        if (productIndex !== -1) {
+            this.products.splice(productIndex, 1);
+            this.saveProducts();
+            console.log(`El producto con id ${id} se eliminó con éxito`);
+        } else {
+            console.log(`No se encuentra el producto con el id ${id}`);
         }
     }
 }
 
-const product = new ProductManager ()
+const product = new ProductManager();
 
-//Producto
-product.addProduct("Smartphone", "Apple Iphone 12", 540, "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRtdOc1MDIQlEzyfxFv_tgroSNiVnFyEnyFounriIaNcfbr_oX2005I_80q3si6whr4W_l4H49W6TxR7KMuMcFNGYANR-ASEglIGng4l7ZiYS3abhLa9LaB&usqp=CAE", 456, 3 );
-//Producto
-product.addProduct("Smartphone", "Apple Iphone 13", 600, "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcRLY_71W1F1mZRV8q4Xma5qgk5MfeY0SGSb-aS7kZZcOZX2Qr4fHO9kJwIPrxFuZ_ZAVauji2t4zMNQTn62XVA7wYqwufpswvdZE97Gh-GOV_haA4nbF_27&usqp=CAE", 567, 6 );
+// Producto
+product.addProduct("Smartphone", "Apple Iphone 12", 540, "https://...", 456);
+// Producto
+product.addProduct("Smartphone", "Apple Iphone 13", 600, "https://...", 567);
+
+console.log(product.getProducts());
+console.log(product.getProductById(1));
+
+// Ejemplo de actualización
+product.updateProduct(1, { price: 600, stock: 10 });
+
+// Ejemplo de eliminación
+product.deleteProduct(1);
 
 console.log(product.getProducts());
 
-console.log(product.getProductsById(456));
 
 
 
