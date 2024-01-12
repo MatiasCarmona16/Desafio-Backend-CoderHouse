@@ -6,6 +6,11 @@ class ProductManager {
         this.loadProducts();
     }
 
+    async allProducts() {
+        let res = await fs.promises.readFile("./productos.json", "utf-8")
+        return res
+    }
+
     loadProducts() {
         try {
             const data = fs.readFileSync(this.path, 'utf-8');
@@ -101,6 +106,9 @@ product.updateProduct(1, { price: 600, stock: 10 });
 product.deleteProduct(1);
 
 console.log(product.getProducts());
+
+
+module.exports = ProductManager
 
 
 
