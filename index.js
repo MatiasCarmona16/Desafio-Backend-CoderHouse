@@ -11,7 +11,11 @@ app.get("/", (req, res) => {
 app.get("/allProducts", async (req, res) => {
     let response = await product.allProducts()
     res.send(response)
+})
 
+app.get('/productById/:id', (req, res) => {
+    let id = req.params.id
+    console.log(id)
 })
 
 app.listen (8690, () => {
