@@ -9,7 +9,9 @@ app.get("/", (req, res) => {
 })
 
 app.get("/allProducts", async (req, res) => {
-    let response = await product.allProducts()
+    const limit = req.query.limit
+
+    let response = await product.allProducts(limit)
     res.send(response)
 })
 

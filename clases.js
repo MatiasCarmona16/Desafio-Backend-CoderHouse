@@ -6,9 +6,15 @@ class ProductManager {
         this.loadProducts();
     }
 
-    async allProducts() {
+    async allProducts(limit) {
         let res = await fs.promises.readFile("./productos.json", "utf-8")
-        return res
+        let products = JSON.parse(res);
+
+        if (limit) {
+            products = products.slice(0, limit);
+        }
+
+        return products;
     }
 
     loadProducts() {
