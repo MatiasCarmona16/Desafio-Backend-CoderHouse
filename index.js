@@ -15,7 +15,10 @@ app.get("/allProducts", async (req, res) => {
 
 app.get('/productById/:id', (req, res) => {
     let id = req.params.id
-    console.log(id)
+    let proFound = products.find (elm => {
+        return elm.id == id
+    })
+    console.log(proFound)
 })
 
 app.listen (8690, () => {
